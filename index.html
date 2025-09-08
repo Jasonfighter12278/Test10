@@ -1,4 +1,118 @@
-
-<!doctype html><html data-brand="napoleon" lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover"><title>Napoleon</title><script>performance.mark('app:start');
-          performance.mark('header:start');</script><script>window.prerenderReady = false;</script><script id="translations-script" src="/static/js/getTranslations?locale=en-BE"></script><script>window.translationMessages = translations;
-          translations = null;</script><script src="/static/js/gtm.js"></script><script src="/static/js/one-trust.js?v=2"></script><script src="https://superbet-content.freetls.fastly.net/cached-superbet/app-config?country=be&environment=prod&platform=web&format=js"></script><script src="" id="mgeo-engine"></script><link id="defaultFavicon" rel="shortcut icon" type="image/png" href="/static/img/icons/favicon-napoleon-casino.ico"/><link id="favicon16" rel="icon" type="image/png" sizes="16x16" href="/static/img/icons/favicon-napoleon-casino-16x16.png"><link id="favicon32" rel="icon" type="image/png" sizes="32x32" href="/static/img/icons/favicon-napoleon-casino-32x32.png"><link id="faviconSvg" rel="icon" type="image/svg+xml" href="/static/img/icons/favicon-napoleon-casino.svg"/><link id="manifest" rel="manifest" href="/static/manifest-napoleon.json" crossorigin="use-credentials"><meta name="google-site-verification" content="cAHJ7okzAxP1Bz422yebec0zmUMnZYD5NkqszVG3Ris"/><!--[if IE]><link rel="shortcut icon" href="/static/img/icons/favicon.ico"><![endif]--><meta name="theme-color" content="#e7dff0"><meta name="msapplication-TileColor" content="#e7dff0"><meta name="msapplication-navbutton-color" content="#e7dff0"><link id="safariPinnedTab" rel="mask-icon" href="/static/img/icons/favicon-napoleon.svg" color="#e7dff0"><link id="appleTouchIcon" rel="apple-touch-icon" sizes="180x180" href="/static/img/icons/apple-touch-icon-napoleon.png" color="#e7dff0"><meta name="apple-mobile-web-app-status-bar-style" content="#e7dff0"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="superbet.country"><meta name="msapplication-TileColor" content="#000000"><script defer="defer" src="/static/js/chunk-vendors.163f8688.js"></script><script defer="defer" src="/static/js/app.6351204f.js"></script></head><body><noscript id="fallback-content">This is your fallback content in case JavaScript fails to load.</noscript><div id="app"></div></body></html>
+<!doctype html>
+<html lang="en" data-brand="napoleon">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+<title>Dino Casino</title>
+<link rel="shortcut icon" href="icons/favicon.ico"/>
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg"/>
+<link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+<meta name="theme-color" content="#e7dff0">
+<meta name="msapplication-TileColor" content="#e7dff0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script>
+performance.mark('app:start');
+performance.mark('header:start');
+window.translationMessages={
+en:{
+welcome:"Welcome to Demo Casino!",
+balance:"Demo Coins: 1000",
+play:"Play",
+logout:"Logout",
+login:"Login",
+register:"Register",
+home:"Home",
+lobby:"Lobby"
+}};
+</script>
+<style>
+body{margin:0;font-family:sans-serif;background:#e7dff0;color:#333;transition:background 0.3s;}
+header{background:#4b2f7f;color:#fff;padding:10px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;}
+header .balance{font-weight:bold;}
+header nav button{margin-left:10px;padding:6px 12px;background:#6a42a4;color:#fff;border:none;border-radius:4px;cursor:pointer;}
+header nav button:hover{background:#4b2f7f;}
+button{padding:8px 16px;margin:5px;background:#4b2f7f;color:#fff;border:none;border-radius:4px;cursor:pointer;}
+button:hover{background:#6a42a4;}
+.main{padding:20px;display:flex;flex-wrap:wrap;gap:20px;justify-content:center;transition:all 0.3s;}
+.card{background:#fff;border-radius:8px;width:150px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.2);transition:transform 0.2s;}
+.card:hover{transform:translateY(-5px);}
+.card h3{margin:10px 0;}
+.card button{margin-top:auto;}
+.fade{opacity:0;transition:opacity 0.3s;}
+.fade.show{opacity:1;}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">Demo Casino</div>
+<div class="balance" id="balance">${window.translationMessages.en.balance}</div>
+<nav>
+<button id="homeNav">${window.translationMessages.en.home}</button>
+<button id="lobbyNav">${window.translationMessages.en.lobby}</button>
+<button id="loginBtn">${window.translationMessages.en.login}</button>
+<button id="registerBtn">${window.translationMessages.en.register}</button>
+<button id="logoutBtn" style="display:none;">${window.translationMessages.en.logout}</button>
+</nav>
+</header>
+<div id="app" class="main"></div>
+<noscript>This is your fallback content in case JavaScript fails to load.</noscript>
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+let root=document.getElementById("app");
+let balance=1000;
+function updateBalance(){document.getElementById("balance").innerText=`Demo Coins: ${balance}`;}
+let currentPage="home";
+function renderHome(){
+root.innerHTML='<div style="text-align:center;"><h1>'+window.translationMessages.en.welcome+'</h1><p>Use the navigation above to explore the demo casino.</p></div>';
+}
+function renderLobby(){
+let games=["Slots","Roulette","Blackjack","Poker","Baccarat"];
+root.innerHTML="";
+games.forEach(g=>{
+let card=document.createElement("div");
+card.className="card fade show";
+card.innerHTML=`<h3>${g}</h3><button>${window.translationMessages.en.play}</button>`;
+card.querySelector("button").addEventListener("click",()=>{
+let win=Math.floor(Math.random()*200)-50;
+balance+=win;
+updateBalance();
+alert(win>=0?`You won ${win} coins!`:`You lost ${-win} coins!`);
+});
+root.appendChild(card);
+});
+}
+document.getElementById("homeNav").addEventListener("click",()=>{
+currentPage="home";renderHome();
+});
+document.getElementById("lobbyNav").addEventListener("click",()=>{
+currentPage="lobby";renderLobby();
+});
+document.getElementById("loginBtn").addEventListener("click",()=>{
+alert("login successful!");
+document.getElementById("loginBtn").style.display="none";
+document.getElementById("registerBtn").style.display="none";
+document.getElementById("logoutBtn").style.display="inline-block";
+});
+document.getElementById("registerBtn").addEventListener("click",()=>{
+alert("registration successful!");
+document.getElementById("loginBtn").style.display="none";
+document.getElementById("registerBtn").style.display="none";
+document.getElementById("logoutBtn").style.display="inline-block";
+});
+document.getElementById("logoutBtn").addEventListener("click",()=>{
+alert("Logged out!");
+document.getElementById("loginBtn").style.display="inline-block";
+document.getElementById("registerBtn").style.display="inline-block";
+document.getElementById("logoutBtn").style.display="none";
+renderHome();
+});
+renderHome();
+updateBalance();
+});
+</script>
+</body>
+</html>
