@@ -1,118 +1,544 @@
 <!doctype html>
-<html lang="en" data-brand="napoleon">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
-<title>Dino Casino</title>
-<link rel="shortcut icon" href="icons/favicon.ico"/>
-<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
-<link rel="icon" type="image/svg+xml" href="icons/favicon.svg"/>
-<link rel="manifest" href="manifest.json" crossorigin="use-credentials">
-<meta name="theme-color" content="#e7dff0">
-<meta name="msapplication-TileColor" content="#e7dff0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<script>
-performance.mark('app:start');
-performance.mark('header:start');
-window.translationMessages={
-en:{
-welcome:"Welcome to Demo Casino!",
-balance:"Demo Coins: 1000",
-play:"Play",
-logout:"Logout",
-login:"Login",
-register:"Register",
-home:"Home",
-lobby:"Lobby"
-}};
-</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dino Casino — Playable Demo</title>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <style>
-body{margin:0;font-family:sans-serif;background:#e7dff0;color:#333;transition:background 0.3s;}
-header{background:#4b2f7f;color:#fff;padding:10px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;}
-header .balance{font-weight:bold;}
-header nav button{margin-left:10px;padding:6px 12px;background:#6a42a4;color:#fff;border:none;border-radius:4px;cursor:pointer;}
-header nav button:hover{background:#4b2f7f;}
-button{padding:8px 16px;margin:5px;background:#4b2f7f;color:#fff;border:none;border-radius:4px;cursor:pointer;}
-button:hover{background:#6a42a4;}
-.main{padding:20px;display:flex;flex-wrap:wrap;gap:20px;justify-content:center;transition:all 0.3s;}
-.card{background:#fff;border-radius:8px;width:150px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.2);transition:transform 0.2s;}
-.card:hover{transform:translateY(-5px);}
-.card h3{margin:10px 0;}
-.card button{margin-top:auto;}
-.fade{opacity:0;transition:opacity 0.3s;}
-.fade.show{opacity:1;}
+:root{--bg:#0f1020;--card:#0f1724;--accent:#8b5cf6;--muted:#9aa4b2;--glass:rgba(255,255,255,0.04)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:#e6eef8;background:linear-gradient(180deg,#0b1020 0%, #0f1330 60%);-webkit-font-smoothing:antialiased}
+.app{max-width:1150px;margin:28px auto;padding:20px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px;box-shadow:0 8px 30px rgba(99,102,241,0.12)}
+.title{color:white;font-size:20px;font-weight:700}
+.controls{display:flex;align-items:center;gap:12px}
+.balance{background:linear-gradient(90deg,rgba(255,255,255,0.03),transparent);padding:10px 14px;border-radius:10px;color:#dbeafe;font-weight:600;border:1px solid rgba(255,255,255,0.03)}
+.btn{background:var(--accent);border:none;padding:10px 14px;border-radius:10px;color:white;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(139,92,246,0.12)}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+.layout{display:grid;grid-template-columns:300px 1fr;gap:18px;margin-top:20px}
+.sidebar{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
+.menu{display:flex;flex-direction:column;gap:8px}
+.menu button{background:transparent;border:none;color:var(--muted);padding:10px;border-radius:8px;text-align:left;cursor:pointer}
+.menu button.active{color:white;background:linear-gradient(90deg,rgba(139,92,246,0.12),transparent)}
+.card{background:linear-gradient(180deg,var(--card),#0b1220);padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+.main{min-height:540px}
+.header-row{display:flex;align-items:center;justify-content:space-between}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:14px}
+.game-card{border-radius:12px;padding:14px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);display:flex;flex-direction:column;gap:12px;align-items:center}
+.game-card h3{margin:0;color:white}
+.game-stage{margin-top:12px}
+.small{font-size:13px;color:var(--muted)}
+.center{display:flex;align-items:center;justify-content:center}
+/* SLOT styles */
+.slot{display:flex;flex-direction:column;gap:12px;align-items:center}
+.reels{display:flex;gap:10px}
+.reel{width:100px;height:120px;overflow:hidden;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,#071028,#0b1530);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px}
+.symbol{width:84px;height:84px;margin:4px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:white}
+.controls-row{display:flex;gap:10px;align-items:center}
+.input{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:white}
+.paytable{display:flex;flex-direction:column;gap:6px;margin-top:8px;color:var(--muted);font-size:13px}
+/* Roulette */
+.roulette-wrap{display:flex;gap:18px;align-items:center}
+.roulette{width:260px;height:260px;border-radius:50%;background:conic-gradient(#de1f1f 0 5%, #111 5% 10%);display:grid;place-items:center;border:6px solid rgba(255,255,255,0.03);position:relative}
+.roulette .marker{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:14px solid #ffd166}
+.bet-panel{display:flex;flex-direction:column;gap:8px}
+/* Blackjack */
+.table{background:linear-gradient(180deg,#052025,#06303a);padding:18px;border-radius:12px;color:white}
+.cards{display:flex;gap:8px}
+.card-visual{width:64px;height:96px;border-radius:8px;background:white;color:#111;display:flex;align-items:center;justify-content:center;font-weight:700}
+.footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center}
+/* responsive */
+@media (max-width:900px){.layout{grid-template-columns:1fr}.sidebar{order:2}.main{order:1}}
 </style>
 </head>
 <body>
-<header>
-<div class="logo">Demo Casino</div>
-<div class="balance" id="balance">${window.translationMessages.en.balance}</div>
-<nav>
-<button id="homeNav">${window.translationMessages.en.home}</button>
-<button id="lobbyNav">${window.translationMessages.en.lobby}</button>
-<button id="loginBtn">${window.translationMessages.en.login}</button>
-<button id="registerBtn">${window.translationMessages.en.register}</button>
-<button id="logoutBtn" style="display:none;">${window.translationMessages.en.logout}</button>
-</nav>
-</header>
-<div id="app" class="main"></div>
-<noscript>This is your fallback content in case JavaScript fails to load.</noscript>
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <div class="logo">DC</div>
+      <div>
+        <div class="title">Dino Casino — Playable Demo</div>
+        <div class="small">Realistic mini-games, client-side demo</div>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="balance card" id="balance">Demo Coins: 1000</div>
+      <button class="btn ghost" id="loginBtn">Log in</button>
+      <button class="btn" id="registerBtn">Register</button>
+      <button class="btn" id="logoutBtn" style="display:none">Logout</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar card">
+      <div style="font-weight:700;color:white;margin-bottom:8px">Games</div>
+      <div class="menu" id="menu">
+        <button data-game="home" class="active">Home</button>
+        <button data-game="slots">Slots</button>
+        <button data-game="roulette">Roulette</button>
+        <button data-game="blackjack">Blackjack</button>
+        <button data-game="poker">Poker (5-card)</button>
+        <button data-game="baccarat">Baccarat</button>
+      </div>
+      <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+      <div style="font-weight:700;color:white;margin-bottom:8px">Account</div>
+      <div id="accountInfo" class="small">Not logged in</div>
+    </aside>
+
+    <main class="main card" id="main">
+      <!-- dynamic content -->
+    </main>
+  </div>
+</div>
+
+<!-- Simple modal for login/register -->
+<div id="modal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1000">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6)"></div>
+  <div style="position:relative;z-index:2;max-width:420px;width:94%;border-radius:12px;padding:18px;background:linear-gradient(180deg,#071128,#0b1630);border:1px solid rgba(255,255,255,0.03)">
+    <h3 id="modalTitle" style="margin-top:0;color:white">Log in</h3>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <input id="usernameInput" class="input" placeholder="Username" />
+      <input id="passwordInput" class="input" type="password" placeholder="Password" />
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn ghost" id="closeModal">Cancel</button>
+        <button class="btn" id="modalAction">Confirm</button>
+      </div>
+      <div class="small" style="color:var(--muted);margin-top:4px">This demo stores a simple account in your browser using localStorage. No server involved.</div>
+    </div>
+  </div>
+</div>
+
 <script>
-document.addEventListener("DOMContentLoaded",()=>{
-let root=document.getElementById("app");
-let balance=1000;
-function updateBalance(){document.getElementById("balance").innerText=`Demo Coins: ${balance}`;}
-let currentPage="home";
-function renderHome(){
-root.innerHTML='<div style="text-align:center;"><h1>'+window.translationMessages.en.welcome+'</h1><p>Use the navigation above to explore the demo casino.</p></div>';
+// ----- Basic account & balance management (localStorage) -----
+const storage = window.localStorage;
+function getAccounts(){try{return JSON.parse(storage.getItem('dc_accounts')||'{}')}catch(e){return {}}}
+function saveAccounts(a){storage.setItem('dc_accounts', JSON.stringify(a))}
+function currentUser(){return storage.getItem('dc_current')}
+function setCurrentUser(u){ if(u) storage.setItem('dc_current', u); else storage.removeItem('dc_current'); updateAccountUI(); }
+function getBalance(){let b = parseInt(storage.getItem('dc_balance')||'1000',10); return isNaN(b)?1000:b}
+function setBalance(n){storage.setItem('dc_balance', String(Math.max(0, Math.floor(n)))); updateBalanceUI(); }
+function updateBalanceUI(){document.getElementById('balance').innerText = 'Demo Coins: ' + getBalance();}
+function updateAccountUI(){const ai = document.getElementById('accountInfo'); const u=currentUser(); if(u){ai.innerText = 'Signed in as ' + u; document.getElementById('loginBtn').style.display='none'; document.getElementById('registerBtn').style.display='none'; document.getElementById('logoutBtn').style.display='inline-block';} else {ai.innerText='Not logged in'; document.getElementById('loginBtn').style.display='inline-block'; document.getElementById('registerBtn').style.display='inline-block'; document.getElementById('logoutBtn').style.display='none';}}
+// init
+if(!storage.getItem('dc_balance')) storage.setItem('dc_balance', '1000'); updateBalanceUI(); updateAccountUI();
+
+// modal
+const modal = document.getElementById('modal'); const modalTitle = document.getElementById('modalTitle'); const usernameInput = document.getElementById('usernameInput'); const passwordInput = document.getElementById('passwordInput'); const modalAction = document.getElementById('modalAction');
+let modalMode = 'login';
+function openModal(mode){modalMode = mode; modal.style.display='flex'; modalTitle.innerText = mode === 'login' ? 'Log in' : 'Register'; usernameInput.value=''; passwordInput.value='';}
+function closeModal(){modal.style.display='none'}
+document.getElementById('loginBtn').addEventListener('click', ()=>openModal('login'));
+document.getElementById('registerBtn').addEventListener('click', ()=>openModal('register'));
+document.getElementById('closeModal').addEventListener('click', closeModal);
+modalAction.addEventListener('click', ()=>{
+  const user = usernameInput.value.trim(); const pass = passwordInput.value;
+  if(!user || !pass){alert('Provide username & password'); return}
+  const accounts = getAccounts();
+  if(modalMode==='register'){
+    if(accounts[user]){alert('Username taken'); return}
+    accounts[user] = {password:pass}; saveAccounts(accounts); setCurrentUser(user); alert('Registered and logged in as ' + user); closeModal();
+  } else {
+    if(!accounts[user] || accounts[user].password !== pass){alert('Invalid credentials'); return}
+    setCurrentUser(user); alert('Logged in as ' + user); closeModal();
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', ()=>{setCurrentUser(null); alert('Logged out');});
+
+// Menu navigation
+const menuButtons = document.querySelectorAll('#menu button'); const main = document.getElementById('main');
+menuButtons.forEach(b=>b.addEventListener('click', ()=>{menuButtons.forEach(x=>x.classList.remove('active')); b.classList.add('active'); showPage(b.dataset.game);}));
+
+// Show home by default
+showPage('home');
+
+function showPage(name){if(name==='home') renderHome(); else if(name==='slots') renderSlots(); else if(name==='roulette') renderRoulette(); else if(name==='blackjack') renderBlackjack(); else if(name==='poker') renderPoker(); else if(name==='baccarat') renderBaccarat(); }
+
+function renderHome(){main.innerHTML = `
+  <div class="header-row">
+    <div>
+      <h2 style="margin:0;color:white">Welcome to Dino Casino</h2>
+      <div class="small" style="margin-top:6px">Try our playable mini-games — this is a client-only demo using localStorage.</div>
+    </div>
+    <div class="small">Have fun — play responsibly (demo coins only).</div>
+  </div>
+  <div class="games-grid">
+    <div class="game-card card">
+      <h3>Slots</h3>
+      <div class="small">A 3-reel slot with animation and weighted symbol odds.</div>
+      <div class="game-stage"><button class="btn" onclick="menuSelect('slots')">Play Slots</button></div>
+    </div>
+    <div class="game-card card">
+      <h3>Roulette</h3>
+      <div class="small">Place color or number bets and spin the wheel.</div>
+      <div class="game-stage"><button class="btn" onclick="menuSelect('roulette')">Play Roulette</button></div>
+    </div>
+    <div class="game-card card">
+      <h3>Blackjack</h3>
+      <div class="small">Classic dealer vs player. Hit or Stand.</div>
+      <div class="game-stage"><button class="btn" onclick="menuSelect('blackjack')">Play Blackjack</button></div>
+    </div>
+    <div class="game-card card">
+      <h3>Poker (5-card)</h3>
+      <div class="small">Five-card draw: get the best hand to win.</div>
+      <div class="game-stage"><button class="btn" onclick="menuSelect('poker')">Play Poker</button></div>
+    </div>
+    <div class="game-card card">
+      <h3>Baccarat</h3>
+      <div class="small">Simple compare — banker vs player.</div>
+      <div class="game-stage"><button class="btn" onclick="menuSelect('baccarat')">Play Baccarat</button></div>
+    </div>
+  </div>
+`}
+function menuSelect(g){document.querySelector('#menu button[data-game="'+g+'"]').click();}
+
+// -------------------- SLOTS --------------------
+function renderSlots(){
+  main.innerHTML = `
+    <h3 style="color:white;margin:0">Slots — 3-Reel Machine</h3>
+    <div class="slot">
+      <div class="reels" id="reels"></div>
+      <div class="controls-row">
+        <label class="small">Bet:</label>
+        <input id="betAmount" class="input" type="number" value="10" min="1" style="width:100px">
+        <button class="btn" id="spinBtn">Spin</button>
+        <button class="btn ghost" id="maxBet">Max</button>
+      </div>
+      <div class="paytable card" id="paytable" style="width:360px"></div>
+    </div>
+  `;
+
+  const symbols = [
+    {label:'🍒',weight:30,value:5},
+    {label:'🍋',weight:25,value:8},
+    {label:'🔔',weight:20,value:12},
+    {label:'⭐',weight:15,value:20},
+    {label:'💎',weight:8,value:50},
+    {label:'👑',weight:2,value:200}
+  ];
+  // build reels
+  const reelsWrap = document.getElementById('reels');
+  for(let i=0;i<3;i++){
+    const r = document.createElement('div'); r.className='reel'; r.id='reel'+i;
+    // fill with symbols stacked (repeat to allow animation)
+    for(let j=0;j<20;j++){
+      const s = symbols[Math.floor(Math.random()*symbols.length)];
+      const el = document.createElement('div'); el.className='symbol'; el.innerText = s.label; r.appendChild(el);
+    }
+    reelsWrap.appendChild(r);
+  }
+
+  // paytable
+  const pt = document.getElementById('paytable'); pt.innerHTML = '<strong style="color:white">Paytable</strong>';
+  symbols.forEach(s=>{ const div = document.createElement('div'); div.innerText = `${s.label} — 3x = ${s.value}× bet`; pt.appendChild(div)});
+
+  const spinBtn = document.getElementById('spinBtn'); const betInput = document.getElementById('betAmount'); document.getElementById('maxBet').addEventListener('click', ()=>{betInput.value = Math.max(1, Math.floor(getBalance()/10)*10 || 10)});
+
+  function weightedPick(){ const total = symbols.reduce((a,b)=>a+b.weight,0); let r=Math.random()*total; for(const s of symbols){ if(r < s.weight) return s; r -= s.weight; } return symbols[symbols.length-1]; }
+
+  let spinning=false;
+  spinBtn.addEventListener('click', async ()=>{
+    if(spinning) return; spinning=true; spinBtn.disabled=true; const bet = Math.max(1, Math.floor(Number(betInput.value) || 1)); if(bet > getBalance()){alert('Not enough balance'); spinning=false; spinBtn.disabled=false; return}
+    setBalance(getBalance() - bet);
+    // pick outcome per reel
+    const results = [weightedPick(), weightedPick(), weightedPick()];
+
+    // animate reels: for each reel, shift content and then stop on the chosen symbol
+    for(let i=0;i<3;i++){
+      const reel = document.getElementById('reel'+i);
+      // create a column of random symbols long enough
+      const stopSymbol = results[i].label;
+      // animate by prepending many symbols and translating
+      // simple approach: replace content with a stack that ends with stopSymbol
+      reel.innerHTML = '';
+      const finalIndex = 5 + Math.floor(Math.random()*6);
+      for(let k=0;k<finalIndex;k++){
+        const sym = symbols[Math.floor(Math.random()*symbols.length)].label;
+        const el = document.createElement('div'); el.className='symbol'; el.innerText = sym; reel.appendChild(el);
+      }
+      // final visible symbol
+      const finalEl = document.createElement('div'); finalEl.className='symbol'; finalEl.innerText = stopSymbol; reel.appendChild(finalEl);
+      // duplicate a few more for smoothness
+      for(let k=0;k<6;k++){ const el = document.createElement('div'); el.className='symbol'; el.innerText = symbols[Math.floor(Math.random()*symbols.length)].label; reel.appendChild(el);} 
+      // set initial transform
+      reel.style.transition='none'; reel.style.transform='translateY(0px)';
+    }
+
+    // staggered spin
+    const delays = [500, 900, 1300];
+    for(let i=0;i<3;i++){
+      const reel = document.getElementById('reel'+i);
+      const cellHeight = 92; // symbol + margin
+      // compute offset to move so that finalEl comes into view
+      const finalEl = reel.querySelectorAll('.symbol')[reel.querySelectorAll('.symbol').length - 7]; // approximate position
+      const index = Array.from(reel.children).indexOf(finalEl);
+      const target = -index * (cellHeight);
+      // apply transition
+      setTimeout(()=>{
+        reel.style.transition = 'transform 1s cubic-bezier(.2,.9,.2,1)';
+        reel.style.transform = `translateY(${target}px)`;
+      }, 150*i);
+    }
+
+    // wait for last reel
+    await new Promise(r=>setTimeout(r, 1700));
+
+    // determine payout: if all three labels equal
+    let payout = 0;
+    if(results[0].label === results[1].label && results[1].label === results[2].label){
+      // find symbol object
+      const sym = symbols.find(s=>s.label===results[0].label);
+      payout = bet * sym.value;
+      setBalance(getBalance() + payout);
+      alert('JACKPOT! You got 3 ' + results[0].label + ' — win ' + payout + ' coins');
+    } else if(results[0].label === results[1].label || results[1].label === results[2].label || results[0].label===results[2].label){
+      // small win for any pair
+      payout = Math.floor(bet * 1.5);
+      setBalance(getBalance() + payout);
+      alert('Nice! You hit a pair — win ' + payout + ' coins');
+    } else {
+      // small chance of random consolation
+      alert('No win this spin. Try again!');
+    }
+
+    spinning=false; spinBtn.disabled=false;
+  });
 }
-function renderLobby(){
-let games=["Slots","Roulette","Blackjack","Poker","Baccarat"];
-root.innerHTML="";
-games.forEach(g=>{
-let card=document.createElement("div");
-card.className="card fade show";
-card.innerHTML=`<h3>${g}</h3><button>${window.translationMessages.en.play}</button>`;
-card.querySelector("button").addEventListener("click",()=>{
-let win=Math.floor(Math.random()*200)-50;
-balance+=win;
-updateBalance();
-alert(win>=0?`You won ${win} coins!`:`You lost ${-win} coins!`);
-});
-root.appendChild(card);
-});
+
+// -------------------- ROULETTE --------------------
+function renderRoulette(){
+  main.innerHTML = `
+    <h3 style="color:white;margin:0">Roulette</h3>
+    <div style="margin-top:12px;display:flex;gap:18px;align-items:flex-start">
+      <div class="roulette-wrap card">
+        <div class="roulette" id="wheel">
+          <div class="marker"></div>
+          <div style="position:relative;z-index:2;color:white;font-weight:700">Wheel</div>
+        </div>
+      </div>
+      <div class="bet-panel card">
+        <div class="small">Bet type</div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="betNumber" class="input" type="number" placeholder="0-36" min="0" max="36" style="width:120px">
+          <select id="betType" class="input">
+            <option value="number">Number (pays 35×)</option>
+            <option value="color">Color (Red/Black pays 2×)</option>
+          </select>
+        </div>
+        <input id="betAmountR" class="input" type="number" value="10" min="1" style="margin-top:8px;width:160px">
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" id="spinWheel">Spin</button>
+          <button class="btn ghost" id="clearBets">Clear</button>
+        </div>
+        <div class="small" style="margin-top:10px;color:var(--muted)">Tip: Numbers 1-36 and 0 (green). Red/Black pays 2×, exact number pays 35× (demo only).</div>
+      </div>
+    </div>
+  `;
+
+  const wheel = document.getElementById('wheel'); const spin = document.getElementById('spinWheel'); const betNum = document.getElementById('betNumber'); const betType = document.getElementById('betType'); const betAmt = document.getElementById('betAmountR');
+
+  // prepare number color map
+  const reds = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+  function colorOf(n){ if(n===0) return 'green'; return reds.has(n)?'red':'black'; }
+
+  spin.addEventListener('click', async ()=>{
+    const bet = Math.max(1, Math.floor(Number(betAmt.value) || 1)); if(bet > getBalance()){alert('Not enough balance'); return}
+    const type = betType.value; const num = Number(betNum.value);
+    if(type==='number' && (isNaN(num) || num<0 || num>36)){alert('Provide a number 0-36'); return}
+
+    setBalance(getBalance() - bet);
+
+    // decide winning number randomly
+    const win = Math.floor(Math.random()*37); // 0..36
+    const winColor = colorOf(win);
+
+    // animate wheel by rotating
+    const rotations = 6 + Math.floor(Math.random()*4);
+    const angle = rotations*360 + (win/37)*360; // approximate
+    wheel.style.transition='transform 3s cubic-bezier(.2,.8,.2,1)';
+    wheel.style.transform = 'rotate(' + angle + 'deg)';
+    await new Promise(r=>setTimeout(r, 3200));
+
+    let payout = 0; let won=false;
+    if(type==='number'){
+      if(num === win){ payout = bet * 35; won=true; }
+    } else {
+      // color
+      const chosen = betNum.value.trim().toLowerCase(); // allow entering red/black
+      let chosenColor = chosen || 'red';
+      if(chosenColor !== 'red' && chosenColor !== 'black'){
+        // if user didn't type color, just assume red
+        chosenColor = 'red';
+      }
+      if(chosenColor === winColor){ payout = bet * 2; won=true; }
+    }
+
+    if(won){ setBalance(getBalance()+payout); alert('Win! Number ' + win + ' ('+winColor+') — payout ' + payout);} else { alert('Lose — number ' + win + ' ('+winColor+')'); }
+    // reset wheel rotation smoothly
+    setTimeout(()=>{ wheel.style.transition='none'; wheel.style.transform='rotate(' + ((win/37)*360) + 'deg)'; }, 100);
+  });
 }
-document.getElementById("homeNav").addEventListener("click",()=>{
-currentPage="home";renderHome();
-});
-document.getElementById("lobbyNav").addEventListener("click",()=>{
-currentPage="lobby";renderLobby();
-});
-document.getElementById("loginBtn").addEventListener("click",()=>{
-alert("login successful!");
-document.getElementById("loginBtn").style.display="none";
-document.getElementById("registerBtn").style.display="none";
-document.getElementById("logoutBtn").style.display="inline-block";
-});
-document.getElementById("registerBtn").addEventListener("click",()=>{
-alert("registration successful!");
-document.getElementById("loginBtn").style.display="none";
-document.getElementById("registerBtn").style.display="none";
-document.getElementById("logoutBtn").style.display="inline-block";
-});
-document.getElementById("logoutBtn").addEventListener("click",()=>{
-alert("Logged out!");
-document.getElementById("loginBtn").style.display="inline-block";
-document.getElementById("registerBtn").style.display="inline-block";
-document.getElementById("logoutBtn").style.display="none";
-renderHome();
-});
-renderHome();
-updateBalance();
-});
+
+// -------------------- BLACKJACK --------------------
+function renderBlackjack(){
+  main.innerHTML = `
+    <h3 style="color:white;margin:0">Blackjack</h3>
+    <div style="display:flex;gap:18px;margin-top:12px">
+      <div style="flex:1">
+        <div class="table card">
+          <div style="font-weight:700">Dealer</div>
+          <div id="dealerCards" class="cards" style="margin-top:8px"></div>
+          <div style="margin-top:12px;font-weight:700">Player</div>
+          <div id="playerCards" class="cards" style="margin-top:8px"></div>
+          <div class="footer">
+            <div class="small">Player total: <span id="playerTotal">0</span></div>
+            <div style="display:flex;gap:8px">
+              <button class="btn" id="hitBtn">Hit</button>
+              <button class="btn" id="standBtn">Stand</button>
+              <button class="btn ghost" id="dealBtn">Deal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="width:260px" class="card">
+        <div class="small">Bet</div>
+        <input id="betBJ" class="input" type="number" value="10" min="1" style="width:160px">
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn" id="placeBet">Place & Deal</button>
+        </div>
+        <div style="margin-top:12px;color:var(--muted)" id="bjMsg"></div>
+      </div>
+    </div>
+  `;
+
+  // blackjack logic
+  const deck = () => {
+    const suits=['♠','♥','♦','♣']; const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+    const d=[]; for(const s of suits) for(const r of ranks) d.push({suit:s,rank:r}); return d;
+  }
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  function cardValue(c){ if(c.rank==='A') return 11; if(['J','Q','K'].includes(c.rank)) return 10; return Number(c.rank); }
+  function handTotal(hand){ let total=0; let aces=0; for(const c of hand){ total += cardValue(c); if(c.rank==='A') aces++; } while(total>21 && aces>0){ total-=10; aces--; } return total; }
+
+  let shoe = shuffle(deck().concat(deck())); let player=[], dealer=[]; let bet=0; let inRound=false;
+  function renderHands(){ const pc = document.getElementById('playerCards'); const dc = document.getElementById('dealerCards'); pc.innerHTML=''; dc.innerHTML=''; for(const c of player){ const el=document.createElement('div'); el.className='card-visual'; el.innerText = c.rank + c.suit; pc.appendChild(el);} for(const c of dealer){ const el=document.createElement('div'); el.className='card-visual'; el.innerText = c.rank + c.suit; dc.appendChild(el);} document.getElementById('playerTotal').innerText = handTotal(player); }
+
+  document.getElementById('placeBet').addEventListener('click', ()=>{ const v = Math.max(1, Math.floor(Number(document.getElementById('betBJ').value)||1)); if(v>getBalance()){alert('Not enough balance');return} bet=v; setBalance(getBalance()-bet); deal(); document.getElementById('bjMsg').innerText='Good luck!';});
+  document.getElementById('hitBtn').addEventListener('click', ()=>{ if(!inRound) return; player.push(shoe.pop()); renderHands(); const t=handTotal(player); if(t>21){ inRound=false; document.getElementById('bjMsg').innerText='Busted! You lose.'; settle(0); } });
+  document.getElementById('standBtn').addEventListener('click', ()=>{ if(!inRound) return; inRound=false; // dealer plays
+    while(handTotal(dealer) < 17) dealer.push(shoe.pop()); renderHands(); const pt=handTotal(player); const dt=handTotal(dealer); if(dt>21 || pt>dt){ document.getElementById('bjMsg').innerText='You win!'; settle(bet*2); } else if(pt===dt){ document.getElementById('bjMsg').innerText='Push.'; settle(bet); } else { document.getElementById('bjMsg').innerText='Dealer wins.'; settle(0); } });
+
+  function deal(){ if(shoe.length < 15) shoe = shuffle(deck().concat(deck())); player=[shoe.pop(), shoe.pop()]; dealer=[shoe.pop(), shoe.pop()]; inRound=true; renderHands(); if(handTotal(player)===21){ inRound=false; document.getElementById('bjMsg').innerText='Blackjack! You win 1.5×'; settle(Math.floor(bet*2.5)); } }
+  function settle(returnAmount){ setTimeout(()=>{ if(returnAmount>0) setBalance(getBalance()+returnAmount); },300); }
+}
+
+// -------------------- POKER (5-card draw) --------------------
+function renderPoker(){
+  main.innerHTML = `
+    <h3 style="color:white;margin:0">Poker — 5-card (single hand)</h3>
+    <div style="display:flex;gap:18px;margin-top:12px">
+      <div style="flex:1" class="card">
+        <div style="font-weight:700">Your Hand</div>
+        <div id="pokerHand" class="cards" style="margin-top:12px"></div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn" id="dealPoker">Deal</button>
+          <button class="btn ghost" id="drawPoker">Draw (replace selected)</button>
+        </div>
+        <div style="margin-top:10px;color:var(--muted)" id="pokerMsg"></div>
+      </div>
+      <div style="width:240px" class="card">
+        <div class="small">Bet</div>
+        <input id="betPoker" class="input" type="number" value="10" min="1" style="width:160px">
+      </div>
+    </div>
+  `;
+
+  const pokerHand = document.getElementById('pokerHand'); const dealBtn = document.getElementById('dealPoker'); const drawBtn = document.getElementById('drawPoker'); const msg = document.getElementById('pokerMsg');
+  let deck = createDeck(); let hand=[]; let bet=0;
+
+  function createDeck(){ const suits=['♠','♥','♦','♣']; const ranks=['2','3','4','5','6','7','8','9','10','J','Q','K','A']; const d=[]; for(const s of suits) for(const r of ranks) d.push({suit:s,rank:r}); return shuffle(d); }
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]}return a}
+  function render(){ pokerHand.innerHTML=''; hand.forEach((c,i)=>{ const el=document.createElement('div'); el.className='card-visual'; el.innerText = c.rank + c.suit; el.dataset.index = i; el.style.cursor='pointer'; el.addEventListener('click', ()=>{ el.classList.toggle('selected'); }); pokerHand.appendChild(el); }); }
+
+  function evaluate(h){ // simple evaluator returning name and multiplier
+    // convert ranks to values
+    const ranks = h.map(c=>c.rank).map(r=> r==='A'?14: r==='K'?13:r==='Q'?12:r==='J'?11:parseInt(r,10)); ranks.sort((a,b)=>a-b);
+    const suits = h.map(c=>c.suit);
+    const counts = {}; ranks.forEach(r=>counts[r]=(counts[r]||0)+1);
+    const vals = Object.values(counts).sort((a,b)=>b-a);
+    const isFlush = new Set(suits).size===1;
+    const isStraight = ranks.every((v,i,a)=>(i===0||v===a[i-1]+1));
+    if(isStraight && isFlush) return {name:'Straight Flush',mul:50};
+    if(vals[0]===4) return {name:'Four of a Kind',mul:25};
+    if(vals[0]===3 && vals[1]===2) return {name:'Full House',mul:9};
+    if(isFlush) return {name:'Flush',mul:6};
+    if(isStraight) return {name:'Straight',mul:4};
+    if(vals[0]===3) return {name:'Three of a Kind',mul:3};
+    if(vals[0]===2 && vals[1]===2) return {name:'Two Pair',mul:2};
+    if(vals[0]===2) return {name:'One Pair',mul:1.5};
+    return {name:'High Card',mul:0};
+  }
+
+  dealBtn.addEventListener('click', ()=>{
+    const betVal = Math.max(1, Math.floor(Number(document.getElementById('betPoker').value)||1)); if(betVal>getBalance()){alert('Not enough balance');return}
+    bet = betVal; setBalance(getBalance()-bet); deck=createDeck(); hand = [deck.pop(), deck.pop(), deck.pop(), deck.pop(), deck.pop()]; render(); msg.innerText='Select cards to replace, then click Draw.'; });
+
+  drawBtn.addEventListener('click', ()=>{
+    if(hand.length===0){alert('Deal first');return}
+    const selectedEls = Array.from(pokerHand.querySelectorAll('.selected')); const indexes = selectedEls.map(el=>Number(el.dataset.index)).sort((a,b)=>b-a);
+    for(const idx of indexes){ hand.splice(idx,1); hand.splice(idx,0, deck.pop()); }
+    render(); const res = evaluate(hand); if(res.mul>0){ const payout = Math.floor(bet * res.mul); setBalance(getBalance()+payout); msg.innerText = `You got ${res.name}! Payout ${payout}`; } else { msg.innerText = 'No win ('+res.name+').'; } });
+}
+
+// -------------------- BACCARAT --------------------
+function renderBaccarat(){
+  main.innerHTML = `
+    <h3 style="color:white;margin:0">Baccarat (Player vs Banker)</h3>
+    <div style="display:flex;gap:18px;margin-top:12px">
+      <div style="flex:1" class="card">
+        <div style="display:flex;justify-content:space-between"><div style="font-weight:700">Table</div><div class="small">Simple demo</div></div>
+        <div style="margin-top:12px">Player: <span id="bacPlayer">-</span></div>
+        <div style="margin-top:6px">Banker: <span id="bacBanker">-</span></div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn" id="dealBac">Deal</button>
+        </div>
+        <div style="margin-top:10px;color:var(--muted)" id="bacMsg"></div>
+      </div>
+      <div style="width:240px" class="card">
+        <div class="small">Bet on</div>
+        <select id="bacChoice" class="input"><option value="player">Player (1×)</option><option value="banker">Banker (0.95×)</option><option value="tie">Tie (8×)</option></select>
+        <input id="betBac" class="input" type="number" value="10" min="1" style="margin-top:8px;width:160px">
+      </div>
+    </div>
+  `;
+
+  const dealBtn = document.getElementById('dealBac'); dealBtn.addEventListener('click', ()=>{
+    const bet = Math.max(1, Math.floor(Number(document.getElementById('betBac').value)||1)); if(bet>getBalance()){alert('Not enough balance');return}
+    setBalance(getBalance()-bet);
+    // draw two cards each from a deck
+    const d = createDeck(); shuffle(d);
+    const p1 = d.pop(); const p2 = d.pop(); const b1 = d.pop(); const b2 = d.pop();
+    function cardVal(c){ if(c.rank==='A') return 1; if(['K','Q','J','10'].includes(c.rank)) return 0; return Number(c.rank); }
+    const playerTotal = (cardVal(p1)+cardVal(p2))%10; const bankerTotal = (cardVal(b1)+cardVal(b2))%10;
+    document.getElementById('bacPlayer').innerText = `${playerTotal} (${p1.rank}${p1.suit}, ${p2.rank}${p2.suit})`; document.getElementById('bacBanker').innerText = `${bankerTotal} (${b1.rank}${b1.suit}, ${b2.rank}${b2.suit})`;
+    let result = 'player'; if(bankerTotal>playerTotal) result='banker'; else if(bankerTotal===playerTotal) result='tie';
+    const choice = document.getElementById('bacChoice').value; let payout = 0; if(choice===result){ if(result==='player') payout = bet*1; else if(result==='banker') payout = Math.floor(bet * 0.95) + bet; else if(result==='tie') payout = bet*8; }
+    if(payout>0){ setBalance(getBalance()+payout); document.getElementById('bacMsg').innerText = `Win! ${result} — payout ${payout}`; } else { document.getElementById('bacMsg').innerText = `Lose — ${result}`; }
+  });
+
+  function createDeck(){ const suits=['♠','♥','♦','♣']; const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K']; const d=[]; for(const s of suits) for(const r of ranks) d.push({suit:s,rank:r}); return d; }
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]}return a}
+}
+
+// helper for balance
+function getBalance(){return parseInt(localStorage.getItem('dc_balance')||'1000',10)}
+function setBalance(v){localStorage.setItem('dc_balance', String(Math.max(0, Math.floor(v||0)))); document.getElementById('balance').innerText = 'Demo Coins: ' + getBalance();}
+
+// expose for quick navigation
+window.menuSelect = menuSelect;
 </script>
 </body>
 </html>
